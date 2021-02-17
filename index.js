@@ -30,6 +30,10 @@ app.get('/', (req, res) => {
 });
 
 app.get('/books', (req, res) => {
+    res.send(Books);
+});
+
+app.get('/book', (req, res) => {
    const book = Books.find(c => c.id === parseInt(req.query.id));
 
    if(!book) res.status(404).sendFile(__dirname + '/pages/404.html');
@@ -56,10 +60,31 @@ app.post('/addbook', (req, res) => {
     res.send(newBook);
 });
  
+app.get('/rmbook', (req, res) => {
+    res.sendFile(__dirname + '/pages/rmbook.html');
+    console.log('woo');
+});
 
+app.post('/rmbook', (req, res) => { 
+    //HTML5 doesnt seem to support delete http request
+    //so using post instead.
+    const book = Books.find(c => c.id === parseInt(req.body.id));
+
+    if(!book) {
+        res.status(404).sendFile(__dirname + '/pages/404.html')
+    }
+    else{
+    const index = Books.indexOf(book);
+    console.log('index');
+    Books.splice(index, 1);
+    }
+    console.log('At least this works');
+    res.send('woop');
+   
+});
 
 // Start the server
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
